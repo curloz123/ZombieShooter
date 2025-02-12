@@ -22,13 +22,13 @@ class zombie
 	float m_Health;
 	float m_Speed;
 
-	bool m_ALive;
+	bool m_Alive;
 
 
 	public:
 	
-	bool isHit();
-	bool isAlive();
+	bool Hit();
+	bool Alive();
 	void spawn(float startX , float startY ,int type, int speed);
 	sf::FloatRect getPosition();
 	sf::Sprite getSprite();
