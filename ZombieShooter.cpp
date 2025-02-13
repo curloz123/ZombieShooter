@@ -36,7 +36,6 @@ int main()
 	bgTexture.loadFromFile("graphics/background_sheet.png");
 
 	int numZombies;
-	int numZombiesAlive;
 	zombie* zombies = nullptr;
 
 	while(window.isOpen())
@@ -150,7 +149,6 @@ int main()
 				numZombies = 10;
 				delete[] zombies;
 				zombies = createHorde(numZombies , arena);
-				numZombiesAlive = numZombies;
 				clock.restart();
 
 

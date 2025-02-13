@@ -1,7 +1,6 @@
 #include "ZombieArena.h"
 #include "Zombie.h"
 #include <SFML/Graphics/Rect.hpp>
-#include<ctime>
 
 zombie* createHorde(int numZombies , sf::IntRect arena)
 {
@@ -12,7 +11,6 @@ zombie* createHorde(int numZombies , sf::IntRect arena)
 	int minX = arena.left + 20;
 	int maxX = arena.width - 20;
 
-	srand((int)time(0));
 	for(int i=0 ; i<numZombies ; ++i)
 	{
 		int side = rand()%4;
@@ -40,7 +38,8 @@ zombie* createHorde(int numZombies , sf::IntRect arena)
 			case 3:
 				//bottom
 				y = maxY;
-				x = (rand()%maxX) + maxX;
+				x = (rand()%maxX) + minX;
+				break;
 		}
 
 		int type = rand()%3;

@@ -10,7 +10,7 @@
 
 void zombie::spawn(float startX , float startY , int type )
 {
-	srand(time(0));
+	m_Alive = true;
 	switch (type)
 	{
 		case 0:
@@ -34,9 +34,8 @@ void zombie::spawn(float startX , float startY , int type )
 			break;
 	}
 
-	float random = rand()%4;
-	m_Speed = m_Speed*(1-random/10.0f);
-
+	float random = rand()%21;
+	m_Speed += random;
 	m_Position = sf::Vector2f(startX , startY);
 	m_Sprite.setOrigin(25,25);
 
@@ -75,24 +74,29 @@ sf::FloatRect zombie::getPosition()
 
 void zombie::update(float deltaTime , sf::Vector2f playerPosition)
 {
-	if(m_Position.x < playerPosition.x)
+	float	X_POS = playerPosition.x;
+	float Y_POS = playerPosition.y;
+	if(m_Position.x < X_POS)
 	{
 		m_Position.x += m_Speed*deltaTime;
 	}
-	else if(m_Position.x > playerPosition.x)
+	if(m_Position.x > X_POS)
 	{
-		m_Position.x -= m_Position.x*deltaTime;
+		m_Position.x -= m_Speed*deltaTime;
 	}
 	
-	if(m_Position.y < playerPosition.y)
+	if(m_Position.y < Y_POS)
 	{
 		m_Position.y += m_Speed*deltaTime;
 	}
-	else if(m_Position.y > playerPosition.y)
+	if(m_Position.y > Y_POS)
 	{
-		m_Position.y -= m_Position.y*deltaTime;
+		m_Position.y -= m_Speed*deltaTime;
 	}
 
-	float angle = atan2(m_Position.y - playerPosition.y , m_Position.x - playerPosition.x) * (180/3.141);
+
+	float angle = atan2(playerPosition.y - m_Position.y , playerPosition.x - m_Position.x) * (180/3.141);
+
+	m_Sprite.setPosition(m_Position);
 	m_Sprite.setRotation(angle);
 }
