@@ -1,3 +1,6 @@
+#pragma once
+#ifndef ZOMBIE_H
+#define ZOMBIE_H
 #include<SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -12,9 +15,6 @@ class zombie
 	const int BLOATER_HEALTH = 5;
 	const int CHASER_HEALTH = 1;
 	const int CRAWLER_HEALTH = 3;
-	
-	const int MAX_VARIANCE = 30;
-	const int OFFSET = 101 - MAX_VARIANCE;
 
 	sf::Vector2f m_Position;
 	sf::Sprite m_Sprite;
@@ -29,9 +29,12 @@ class zombie
 	
 	bool Hit();
 	bool Alive();
-	void spawn(float startX , float startY ,int type, int speed);
+	void spawn(float startX , float startY ,int type);
 	sf::FloatRect getPosition();
 	sf::Sprite getSprite();
 	void update(float deltaTime , sf::Vector2f playerPosition);
 
 };
+
+
+#endif
