@@ -2,29 +2,30 @@ CFLAGS = -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
 
 all: ZombieShooter
 
-ZombieShooter: ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o
-	@echo "Compiling game"
+ZombieShooter: textureHolder.o Zombie.o CreateHorde.o Player.o CreateBackground.o ZombieShooter.o   
 	@g++ $(CFLAGS) ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o -o ZombieShooter
+	@echo ""
+	@echo "Time for the mission, get ready.."
 	@chmod +x ZombieShooter
 
 ZombieShooter.o: ZombieShooter.cpp
-	@echo "Compiling main file"
+	@echo "Almost There"
 	@g++ -c $(CFLAGS) ZombieShooter.cpp 
 
 Player.o: Player.cpp
-	@echo "Compiling Player"
+	@echo "Armouring you up..."
 	@g++ -c $(CFLAGS) Player.cpp 
 
 CreateBackground.o: CreateBackground.cpp
-	@echo "Compiling Background"
+	@echo "Setting your arena..."
 	@g++ -c $(CFLAGS) CreateBackground.cpp
 
 Zombie.o: Zombie.cpp
-	@echo "Compiling Zombies.."
+	@echo "Awaking Zombies.."
 	@gcc -c $(CFLAGS) Zombie.cpp
 
 textureHolder.o: textureHolder.cpp
-	@echo "Compiling textures"
+	@echo "loading textures"
 	@gcc -c $(CFLAGS) textureHolder.cpp
 
 CreateHorde.o: CreateHorde.cpp
