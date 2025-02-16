@@ -2,8 +2,8 @@ CFLAGS = -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
 
 all: ZombieShooter
 
-ZombieShooter: textureHolder.o Zombie.o CreateHorde.o Player.o CreateBackground.o ZombieShooter.o   
-	@g++ $(CFLAGS) ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o -o ZombieShooter
+ZombieShooter: textureHolder.o Zombie.o CreateHorde.o Player.o CreateBackground.o ZombieShooter.o Bullet.o
+	@g++ $(CFLAGS) ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o Bullet.o -o ZombieShooter
 	@echo ""
 	@echo "Time for the mission, get ready.."
 	@chmod +x ZombieShooter
@@ -32,7 +32,10 @@ CreateHorde.o: CreateHorde.cpp
 	@echo "Creating horde"
 	@gcc -c $(CFLAGS) CreateHorde.cpp
  
+Bullet.o: Bullet.cpp
+	@echo "Readying Bullets"
+	@gcc -c $(CFLAGS) Bullet.cpp
 
 clean: 
 	@echo "Removed ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o and ZombieShooter"
-	@rm ZombieShooter.o CreateBackground.o Player.o Zombie.o textureHolder.o CreateHorde.o ZombieShooter
+	@rm ZombieShooter.o CreateBackground.o Player.o Zombie.o textureHolder.o CreateHorde.o ZombieShooter Bullet.o
