@@ -41,11 +41,11 @@ int main()
 	zombie* zombies = nullptr;
 
 	bullet bullets[100];
-	int bulletSpare = 24;
-	int bulletsinClip = 6;
-	int clipSize = 6;
+	int bulletSpare = 10000;
+	int bulletsinClip = 30;
+	int clipSize = 30;
 	int currentBullet = 0;
-	int rateofFire = 1;
+	float rateofFire = 2;
 	sf::Time lastPressed;
 	while(window.isOpen())
 	{
@@ -77,7 +77,7 @@ int main()
 							bulletsinClip = clipSize;	
 							bulletSpare -= clipSize;
 						}
-						else if(bulletSpare > 0 && bulletsinClip !=clipSize)
+						else if(bulletSpare > 0 )
 						{
 							bulletsinClip = bulletSpare;
 							bulletSpare = 0;
@@ -135,16 +135,17 @@ int main()
 
 			if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				if(gameTime.asMilliseconds() - lastPressed.asMilliseconds() > 1000 && bulletsinClip>0)
+				if(gameTime.asMilliseconds() - lastPressed.asMilliseconds() > 100*rateofFire && bulletsinClip>0)
 				{
 					bullets[currentBullet].mf_shoot(player.getCenter().x , player.getCenter().y ,
 							MOUSE_worldPosition.x , MOUSE_worldPosition.y);
 					++currentBullet;
-					if(currentBullet > 100)
+					if(currentBullet > 99)
 					{
 						currentBullet = 0;
 					}
 					--bulletsinClip;
+					lastPressed = gameTime;
 				}
 			}
 		}//End of isPlaying if block

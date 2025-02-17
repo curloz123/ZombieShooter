@@ -49,7 +49,7 @@ void bullet::mf_shoot(float startX , float startY ,float targetX , float targetY
 	}
 	if(targetY < startY)
 	{
-		m_VELOCITY_X *= -1;
+		m_VELOCITY_Y *= -1;
 	}
 
 	m_bullettShape.setPosition(m_Position);
@@ -65,5 +65,6 @@ void bullet::update(float deltaTime)
 	{
 		m_inAir = false;
 	}
+	m_bullettShape.setPosition(m_Position);
 
 }

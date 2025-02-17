@@ -33,5 +33,3 @@ class bullet
 	sf::RectangleShape getShape();
 	void update(float deltaTime);
 };
-
-
