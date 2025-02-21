@@ -1,11 +1,12 @@
 #include "Bullet.h"
+#include<cmath>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System/Vector2.hpp>
 
 bullet::bullet()
 {
-	m_bullettShape.setSize(sf::Vector2f(2,2));
+	m_bullettShape.setSize(sf::Vector2f(8,8));
 }
 
 void bullet::mf_stop()
@@ -40,7 +41,7 @@ void bullet::mf_shoot(float startX , float startY ,float targetX , float targetY
 		gradient *= -1;
 	}
 	
-	m_VELOCITY_Y= m_Speed/(1+gradient);
+	m_VELOCITY_Y= m_Speed/pow((1+(gradient*gradient)),0.5);
 	m_VELOCITY_X = m_VELOCITY_Y * gradient;
 
 	if(targetX < startX)
@@ -56,12 +57,12 @@ void bullet::mf_shoot(float startX , float startY ,float targetX , float targetY
 }
 
 
-void bullet::update(float deltaTime)
+void bullet::update(float deltaTime, sf::IntRect arena)
 {
 	m_Position.x += m_VELOCITY_X * deltaTime;
 	m_Position.y += m_VELOCITY_Y * deltaTime;
-	if(m_Position.x < 0 || m_Position.x > 1920 
-			|| m_Position.y < 0 || m_Position.y >1080)
+	if(m_Position.x < arena.left || m_Position.x > arena.width
+			|| m_Position.y < arena.top || m_Position.y >arena.height)
 	{
 		m_inAir = false;
 	}

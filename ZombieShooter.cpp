@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "ZombieArena.h"
 #include<SFML/Graphics.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -47,6 +48,11 @@ int main()
 	int currentBullet = 0;
 	float rateofFire = 2;
 	sf::Time lastPressed;
+
+	window.setMouseCursorVisible(false);
+	sf::Sprite playerCrosshair;
+	playerCrosshair.setTexture(textureHolder::getTexture("graphics/crosshair.png"));
+	playerCrosshair.setOrigin(25,25);
 	while(window.isOpen())
 	{
 		sf::Event event;
@@ -205,6 +211,8 @@ int main()
 			MOUSE_screenPosition = sf::Mouse::getPosition();
 			MOUSE_worldPosition = window.mapPixelToCoords(sf::Mouse::getPosition() , mainView);
 			player.update(dtasSeconds , sf::Mouse::getPosition());
+			playerCrosshair.setPosition(MOUSE_worldPosition);
+
 
 			sf::Vector2f playerPosition(player.getCenter());
 			mainView.setCenter(player.getCenter());
@@ -219,7 +227,7 @@ int main()
 
 			for(int j=0;j<100;++j)
 			{
-				bullets[j].update(dt.asSeconds());
+				bullets[j].update(dt.asSeconds(),arena);
 			}
 		}
 
@@ -230,6 +238,7 @@ int main()
 			window.setView(mainView);
 			window.draw(backGround , &bgTexture );
 			window.draw(player.getSprite());
+			window.draw(playerCrosshair);
 			
 			for(int i=0;i<numZombies;++i)
 			{

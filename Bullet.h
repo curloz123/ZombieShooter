@@ -31,5 +31,5 @@ class bullet
 	bool mf_inAir();
 	sf::FloatRect getPositiion();
 	sf::RectangleShape getShape();
-	void update(float deltaTime);
+	void update(float deltaTime, sf::IntRect arena);
 };
