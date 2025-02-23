@@ -9,6 +9,7 @@
 #include <SFML/Window/Mouse.hpp>
 #include "textureHolder.h"
 #include "Bullet.h"
+#include "Pickup.h"
 int main()
 {
 	textureHolder texture;
@@ -53,6 +54,10 @@ int main()
 	sf::Sprite playerCrosshair;
 	playerCrosshair.setTexture(textureHolder::getTexture("graphics/crosshair.png"));
 	playerCrosshair.setOrigin(25,25);
+
+	Pickup healthPickup(1);
+	Pickup ammoPickup(2);
+
 	while(window.isOpen())
 	{
 		sf::Event event;
@@ -197,7 +202,12 @@ int main()
 				numZombies = 10;
 				delete[] zombies;
 				zombies = createHorde(numZombies , arena);
+				
+				healthPickup.setArena(arena);
+				ammoPickup.setArena(arena);
+				
 				clock.restart();
+				//ts << clock timings ko dekhna zara
 
 
 			}
@@ -208,8 +218,10 @@ int main()
 			sf::Time dt = clock.restart();
 			gameTime += dt;
 			float dtasSeconds = dt.asSeconds();
+
 			MOUSE_screenPosition = sf::Mouse::getPosition();
 			MOUSE_worldPosition = window.mapPixelToCoords(sf::Mouse::getPosition() , mainView);
+
 			player.update(dtasSeconds , sf::Mouse::getPosition());
 			playerCrosshair.setPosition(MOUSE_worldPosition);
 
@@ -229,7 +241,11 @@ int main()
 			{
 				bullets[j].update(dt.asSeconds(),arena);
 			}
-		}
+
+			healthPickup.update(dt.asSeconds());
+			ammoPickup.update(dt.asSeconds());
+
+		}//End of isPlaying enum
 
 	
 		if(state == STATE::PLAYING)
@@ -240,6 +256,14 @@ int main()
 			window.draw(player.getSprite());
 			window.draw(playerCrosshair);
 			
+			if(ammoPickup.isSpawned())
+			{
+				window.draw(ammoPickup.getSprite());
+			}
+			if(healthPickup.isSpawned())
+			{
+				window.draw(healthPickup.getSprite());
+			}
 			for(int i=0;i<numZombies;++i)
 			{
 				window.draw(zombies[i].getSprite());
@@ -261,3 +285,4 @@ int main()
 
 	return 0;
 }
+
