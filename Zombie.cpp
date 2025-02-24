@@ -34,7 +34,7 @@ void zombie::spawn(float startX , float startY , int type )
 			break;
 	}
 
-	float random = rand()%21;
+	float random = rand()%15;
 	m_Speed += random;
 	m_Position = sf::Vector2f(startX , startY);
 	m_Sprite.setOrigin(25,25);

@@ -8,9 +8,9 @@
 
 class zombie
 {
-	const int BLOATER_SPEED = 30;
+	const int BLOATER_SPEED = 10;
 	const int CHASER_SPEED = 80;
-	const int CRAWLER_SPEED = 50;
+	const int CRAWLER_SPEED = 40;
 
 	const int BLOATER_HEALTH = 5;
 	const int CHASER_HEALTH = 1;
