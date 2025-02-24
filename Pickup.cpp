@@ -36,7 +36,7 @@ void Pickup::setArena(sf::IntRect arena)
 
 void Pickup::spawn()
 {
-	srand((int)time(0));
+	srand((int)time(0)*m_Type);
 	int x = (rand() % m_Arena.width);
 	int y = (rand() % m_Arena.height);
 
@@ -99,13 +99,8 @@ void Pickup::upgrade()
 		m_Value += (AMMO_START_VALUE * 0.5);
 	}
 
-<<<<<<< HEAD
-	m_SecondsToLive += START_SECONDS_TO_LIVE/10;
-	m_SecondsToWait -= START_WAIT_TIME/10;
-=======
 	m_SecondsToLive += START_SECONDS_TO_LIVE/10.0f;
 	m_SecondsToWait -= START_WAIT_TIME/10.0f;
->>>>>>> 8e02c10 (Feb 24 09:20)
 }
 
 
