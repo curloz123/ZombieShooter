@@ -1,5 +1,7 @@
 #pragma once
 #include<SFML/Graphics.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector2.hpp>
 #include<cmath>
 
 class Player{
@@ -21,15 +23,15 @@ private:
 	int m_Health;
 	int m_maxHealth;
 	float m_Speed;
-	sf::Time m_lastHit;
+	float m_lastHit;
 
 public:
 	Player();
 	void spawn(sf::IntRect arena , sf::Vector2f resolution , int tileSize);
 	void ResetPlayerStats();
-	bool hit(sf::Time timeHit);
-	sf::Time getLasthittime();
-	sf::FloatRect getPosition();
+	bool hit(float timeHit);
+	// sf::Time getLasthittime();
+	sf::Vector2f getPos();
 	sf::Vector2f getCenter();
 	float getRotation();
 	sf::Sprite getSprite();

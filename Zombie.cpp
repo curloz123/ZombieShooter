@@ -16,6 +16,7 @@ void zombie::spawn(float startX , float startY , int type )
 		case 0:
 			//bloater
 			m_Sprite.setTexture(textureHolder::getTexture("graphics/bloater.png"));
+			m_Sprite.setOrigin(37,37);
 			m_Speed = BLOATER_SPEED;
 			m_Health = BLOATER_HEALTH;
 			break;
@@ -23,12 +24,14 @@ void zombie::spawn(float startX , float startY , int type )
 		case 1:
 			//crawler
 			m_Sprite.setTexture(textureHolder::getTexture("graphics/crawler.png"));
+			m_Sprite.setOrigin(25,25);
 			m_Speed = CRAWLER_SPEED;
 			m_Health = CRAWLER_HEALTH;
 			break;
 		case 2:
 			//bloater
 			m_Sprite.setTexture(textureHolder::getTexture("graphics/chaser.png"));
+			m_Sprite.setOrigin(27,27);
 			m_Speed = CHASER_SPEED;
 			m_Health = CHASER_HEALTH;
 			break;
@@ -37,7 +40,6 @@ void zombie::spawn(float startX , float startY , int type )
 	float random = rand()%15;
 	m_Speed += random;
 	m_Position = sf::Vector2f(startX , startY);
-	m_Sprite.setOrigin(25,25);
 
 
 }
@@ -66,9 +68,9 @@ sf::Sprite zombie::getSprite()
 	return m_Sprite;
 }
 
-sf::FloatRect zombie::getPosition()
+sf::Vector2f zombie::getPos()
 {
-	return m_Sprite.getGlobalBounds();
+	return m_Sprite.getPosition();
 }
 
 

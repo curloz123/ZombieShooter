@@ -25,12 +25,13 @@ class bullet
 		
 	bullet();
 
-	void mf_stop();
-	void mf_shoot(float startX , float startY ,
+	void stop();
+	void shoot(float startX , float startY ,
 							 float targetX , float targetY);
 
-	bool mf_inAir();
-	sf::FloatRect getPositiion();
+	bool inAir();
+	sf::Vector2f getPos();
+
 	sf::Sprite getShape();
 	void update(float deltaTime, sf::IntRect arena);
 };

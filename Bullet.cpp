@@ -9,23 +9,23 @@
 bullet::bullet()
 {
 	m_Sprite.setTexture(textureHolder::getTexture("graphics/ammo.png"))	;
-	m_Sprite.setOrigin(4,19);
+	m_Sprite.setOrigin(4,18);
 	m_inAir = false;
 }
 
-void bullet::mf_stop()
+void bullet::stop()
 {
 	m_inAir=false;
 }
 
-bool bullet::mf_inAir()
+bool bullet::inAir()
 {
 	return m_inAir;
 }
 
-sf::FloatRect bullet::getPositiion()
+sf::Vector2f bullet::getPos()
 {
-	return m_Sprite.getGlobalBounds();
+	return m_Sprite.getPosition();
 }
 
 sf::Sprite bullet::getShape()
@@ -33,7 +33,7 @@ sf::Sprite bullet::getShape()
 	return m_Sprite;
 }
 
-void bullet::mf_shoot(float startX , float startY ,float targetX , float targetY)
+void bullet::shoot(float startX , float startY ,float targetX , float targetY)
 {
 	m_inAir = true;
 	m_Position.x = startX;
@@ -64,13 +64,15 @@ void bullet::mf_shoot(float startX , float startY ,float targetX , float targetY
 
 void bullet::update(float deltaTime, sf::IntRect arena)
 {
-	m_Position.x += m_VELOCITY_X * deltaTime;
-	m_Position.y += m_VELOCITY_Y * deltaTime;
-	if(m_Position.x < -3000 || m_Position.x > 3000
-			|| m_Position.y < -3000 || m_Position.y > 3000)
-	{
-		m_inAir = false;
-	}
-	m_Sprite.setPosition(m_Position);
+	if(m_inAir){
+		m_Position.x += m_VELOCITY_X * deltaTime;
+		m_Position.y += m_VELOCITY_Y * deltaTime;
+		if(m_Position.x < -3000 || m_Position.x > 3000
+				|| m_Position.y < -3000 || m_Position.y > 3000)
+		{
+			m_inAir = false;
+		}
+		m_Sprite.setPosition(m_Position);
 
+	}
 }

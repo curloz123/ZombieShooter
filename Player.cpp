@@ -2,12 +2,14 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
+#include<iostream>
 
 Player::Player()
 {
 	m_Health = startHealth;
 	m_Speed = startSpeed;
 	m_maxHealth = startHealth;
+	m_lastHit = 0;
 
 	m_Texture.loadFromFile("graphics/player.png");
 	m_Sprite.setTexture(m_Texture);
@@ -38,32 +40,34 @@ void Player::ResetPlayerStats()
 	m_maxHealth = startHealth;
 }
 
-bool Player::hit(sf::Time timeHit )
+bool Player::hit(float timeHit )
 {
-	if(timeHit.asMilliseconds()-m_lastHit.asMilliseconds()>200)
+	m_lastHit += timeHit;
+	if(m_lastHit > 200)
 	{
-		m_lastHit = timeHit;
+		m_lastHit = 0;
 		m_Health -= 10;
 		return true;
 	}
-	else{
+	else
+	{
 		return false;
 	}
 }
  
-sf::Time Player::getLasthittime()
-{
-	return m_lastHit;
-}
+// sf::Time Player::getLasthittime()
+// {
+// 	return m_lastHit;
+// }
 
 sf::Sprite Player::getSprite()
 {
 	return m_Sprite;
 }
 
-sf::FloatRect Player::getPosition()
+sf::Vector2f Player::getPos()
 {
-	return m_Sprite.getGlobalBounds();
+	return m_Sprite.getPosition();
 }
 
 sf::Vector2f Player::getCenter()

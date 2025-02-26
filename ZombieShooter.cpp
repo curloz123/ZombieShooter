@@ -1,4 +1,5 @@
 #include "Player.h"
+#include<cmath>
 #include "ZombieArena.h"
 #include<SFML/Graphics.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -40,6 +41,7 @@ int main()
 	bgTexture.loadFromFile("graphics/background_sheet.png");
 
 	int numZombies;
+	int numZombiesAlive;
 	zombie* zombies = nullptr;
 
 	bullet bullets[100];
@@ -58,6 +60,8 @@ int main()
 	Pickup healthPickup(1);
 	Pickup ammoPickup(2);
 
+	int score = 0;
+	int highScore = 0;
 	while(window.isOpen())
 	{
 		sf::Event event;
@@ -148,7 +152,7 @@ int main()
 			{
 				if(gameTime.asMilliseconds() - lastPressed.asMilliseconds() > 100*rateofFire && bulletsinClip>0)
 				{
-					bullets[currentBullet].mf_shoot(player.getCenter().x , player.getCenter().y ,
+					bullets[currentBullet].shoot(player.getCenter().x , player.getCenter().y ,
 							MOUSE_worldPosition.x , MOUSE_worldPosition.y);
 					++currentBullet;
 					if(currentBullet > 99)
@@ -200,11 +204,13 @@ int main()
 				player.spawn(arena , resolution , tileSize);
 
 				numZombies = 10;
+				numZombiesAlive = 10;
 				delete[] zombies;
 				zombies = createHorde(numZombies , arena);
 				
 				healthPickup.setArena(arena);
 				ammoPickup.setArena(arena);
+
 				
 				clock.restart();
 				//ts << clock timings ko dekhna zara
@@ -245,6 +251,61 @@ int main()
 			healthPickup.update(dt.asSeconds());
 			ammoPickup.update(dt.asSeconds());
 
+			for(int i=0;i<100;++i)
+			{
+				for(int j=0;j<numZombies;++j)
+				{
+					if(bullets[i].inAir() && zombies[j].Alive())
+					{
+						int Zom_posX = zombies[j].getPos().x;
+						int Zom_posY = zombies[j].getPos().y;
+						int Bul_posX = bullets[i].getPos().x;
+						int Bul_posY = bullets[i].getPos().y;
+						if(pow(pow(Zom_posY-Bul_posY,2)+pow(Zom_posX-Bul_posX,2),0.5)<=40)
+						{
+							bullets[i].stop();
+							if(zombies[j].Hit())
+							{
+								score += 10;
+								--numZombiesAlive;
+								if(highScore<score)
+								{
+									highScore = score;
+								}
+								if(numZombiesAlive == 0)
+								{
+									state = STATE::LEVELLING_UP;
+								}
+							}
+						}
+					}
+				}//
+				
+			}//
+
+			for(int i=0;i<numZombiesAlive;++i)
+			{
+				int Zom_posX = zombies[i].getPos().x;
+				int Zom_posY = zombies[i].getPos().y;
+				int Plr_posX = player.getPos().x;
+				int Plr_posY = player.getPos().y;
+				if(pow(pow(Zom_posY - Plr_posY,2)+pow(Zom_posX - Plr_posX,2),0.5) <= 60)
+				{
+					if(player.hit(dtasSeconds*1000.0f))
+					{
+
+					}
+					if(player.getHealth()<=0)
+					{
+						state=STATE::GAME_OVER;
+					}
+				}
+
+				
+			}
+
+
+
 		}//End of isPlaying enum
 
 	
@@ -254,7 +315,6 @@ int main()
 			window.setView(mainView);
 			window.draw(backGround , &bgTexture );
 			window.draw(player.getSprite());
-			window.draw(playerCrosshair);
 			
 			if(ammoPickup.isSpawned())
 			{
@@ -270,14 +330,16 @@ int main()
 			}
 			for(int j=0;j<100;++j)
 			{
-				if(bullets[j].mf_inAir())
+				if(bullets[j].inAir())
 				{
 					window.draw(bullets[j].getShape());
 				}
 			}
+
+			window.draw(playerCrosshair);
+		window.display();
 		}
 
-		window.display();
 	}//End of Game loop
 	 
 
