@@ -383,10 +383,6 @@ int main()
 					int Zom_posY = zombies[i].getPos().y;
 					int Plr_posX = player.getPos().x;
 					int Plr_posY = player.getPos().y;
-						if(numZombiesAlive == 1)
-						{
-							std::cout<<"now"<<std::endl;
-						}
 
 					if(pow(pow(Zom_posY - Plr_posY,2)+pow(Zom_posX - Plr_posX,2),0.5) <= 60)
 					{
