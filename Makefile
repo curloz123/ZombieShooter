@@ -1,12 +1,12 @@
 CFLAGS = -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
 
-all: ZombieShooter
+all: sln
 
-ZombieShooter: textureHolder.o Zombie.o CreateHorde.o Player.o CreateBackground.o ZombieShooter.o Bullet.o Pickup.o
-	@g++ $(CFLAGS) ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o Bullet.o Pickup.o -o ZombieShooter
+sln: textureHolder.o Zombie.o CreateHorde.o Player.o CreateBackground.o ZombieShooter.o Bullet.o Pickup.o
+	@g++ $(CFLAGS) ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o Bullet.o Pickup.o -o sln
 	@echo ""
 	@echo "Time for the mission, get ready.."
-	@chmod +x ZombieShooter
+	@chmod +x sln
 
 ZombieShooter.o: ZombieShooter.cpp
 	@echo "Almost There"
@@ -41,5 +41,5 @@ Pickup.o: Pickup.cpp
 	@g++ -c $(CFLAGS) Pickup.cpp
 
 clean: 
-	@echo "Removed ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o Pickup.o and ZombieShooter"
-	@rm ZombieShooter.o CreateBackground.o Player.o Zombie.o textureHolder.o CreateHorde.o ZombieShooter Bullet.o Pickup.o
+	@echo "Removed ZombieShooter.o Player.o CreateBackground.o Zombie.o textureHolder.o CreateHorde.o Pickup.o and the sln executable"
+	@rm ZombieShooter.o CreateBackground.o Player.o Zombie.o textureHolder.o CreateHorde.o sln Bullet.o Pickup.o
