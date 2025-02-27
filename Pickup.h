@@ -1,5 +1,6 @@
 #pragma once
 #include<SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 
 class Pickup
 {
@@ -24,7 +25,7 @@ class Pickup
 	Pickup(int type);
 	void setArena(sf::IntRect arena);
 	void spawn();
-	sf::FloatRect getPosition();
+	sf::Vector2f getPos();
 	sf::Sprite getSprite();
 	void update(float deltaTime);
 	

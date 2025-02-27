@@ -1,4 +1,6 @@
 #include "Player.h"
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Err.hpp>
 #include<cmath>
 #include "ZombieArena.h"
 #include<SFML/Graphics.hpp>
@@ -11,6 +13,8 @@
 #include "textureHolder.h"
 #include "Bullet.h"
 #include "Pickup.h"
+#include<iostream>
+#include<sstream>
 int main()
 {
 	textureHolder texture;
@@ -62,6 +66,94 @@ int main()
 
 	int score = 0;
 	int highScore = 0;
+
+	sf::Sprite spriteGameOver;
+	sf::Texture gameOverTexture = textureHolder::getTexture("graphics/background.png"); 
+	spriteGameOver.setTexture(gameOverTexture);
+	spriteGameOver.setPosition(0,0);
+
+	sf::View hudView(sf::FloatRect(0,0,resolution.x,resolution.y));
+
+	sf::Sprite spriteAmmoIcon;
+	sf::Texture textureAmmoIcon = textureHolder::getTexture("graphics/ammo_icon.png");
+	spriteAmmoIcon.setTexture(textureAmmoIcon);
+	spriteAmmoIcon.setPosition(20, 980);
+
+	sf::Font font;
+	font.loadFromFile("fonts/zombiecontrol.ttf");
+
+	sf::Text pausedText;
+	pausedText.setFont(font);
+	pausedText.setCharacterSize(155);
+	pausedText.setFillColor(sf::Color::White);
+	pausedText.setPosition(400, 400);
+	pausedText.setString("Press Enter \nto continue");
+
+	sf::Text gameOverText;
+	gameOverText.setFont(font);
+	gameOverText.setCharacterSize(125);
+	gameOverText.setFillColor(sf::Color::White);
+	gameOverText.setPosition(250, 850);
+	gameOverText.setString("Press Enter to play");
+
+	sf::Text LeveLLingUpText;
+	LeveLLingUpText.setFont(font);
+	LeveLLingUpText.setCharacterSize(80);
+	LeveLLingUpText.setFillColor(sf::Color::White);
+	LeveLLingUpText.setPosition(150,250);
+	std::stringstream levelUpStream;
+	levelUpStream <<
+	"1- Increased rate of fire" <<
+	"\n2- Increased clip size(next reload)" <<
+	"\n3- Increased max health" <<
+	"\n4- Increased run speed" <<
+	"\n5- More and better health pickups" <<
+	"\n6- More and better ammo pickups";
+	LeveLLingUpText.setString( levelUpStream.str() );
+
+	// Ammo
+	sf::Text ammoText;
+	ammoText.setFont(font);
+	ammoText.setCharacterSize(55);
+	ammoText.setFillColor(sf::Color::White);
+	ammoText.setPosition(200, 980);
+	
+	// Score
+	sf::Text scoreText;
+	scoreText.setFont(font);
+	scoreText.setCharacterSize(55);
+	scoreText.setFillColor(sf::Color::White);
+	scoreText.setPosition(20, 0);
+	// Hi Score
+	sf::Text hiScoreText;
+	hiScoreText.setFont(font);
+	hiScoreText.setCharacterSize(55);
+	hiScoreText.setFillColor(sf::Color::White);
+	hiScoreText.setPosition(1400, 0);
+	std::stringstream s;
+	s << "Hi Score:" << highScore;
+	hiScoreText.setString(s.str());
+
+// Zombies remaining
+	sf::Text zombiesRemainingText;
+	zombiesRemainingText.setFont(font);
+	zombiesRemainingText.setCharacterSize(55);
+	zombiesRemainingText.setFillColor(sf::Color::White);
+	zombiesRemainingText.setPosition(1500, 980);
+	zombiesRemainingText.setString("Zombies: 100");
+	// Wave number
+	int wave = 0;
+	sf::Text waveNumberText;
+	waveNumberText.setFont(font);
+	waveNumberText.setCharacterSize(55);
+	waveNumberText.setFillColor(sf::Color::White);
+	waveNumberText.setPosition(1250, 980);
+	waveNumberText.setString("Wave: 0");
+	// Health bar
+	sf::RectangleShape healthBar;
+	healthBar.setFillColor(sf::Color::Red);
+	healthBar.setPosition(450, 980);
+
 	while(window.isOpen())
 	{
 		sf::Event event;
@@ -283,29 +375,58 @@ int main()
 				
 			}//
 
-			for(int i=0;i<numZombiesAlive;++i)
+			for(int i=0;i<numZombies;++i)
 			{
-				int Zom_posX = zombies[i].getPos().x;
-				int Zom_posY = zombies[i].getPos().y;
+				if(zombies[i].Alive())
+				{
+					int Zom_posX = zombies[i].getPos().x;
+					int Zom_posY = zombies[i].getPos().y;
+					int Plr_posX = player.getPos().x;
+					int Plr_posY = player.getPos().y;
+						if(numZombiesAlive == 1)
+						{
+							std::cout<<"now"<<std::endl;
+						}
+
+					if(pow(pow(Zom_posY - Plr_posY,2)+pow(Zom_posX - Plr_posX,2),0.5) <= 60)
+					{
+						if(player.hit(dtasSeconds*1000.0f))
+						{
+							std::cout<<player.getHealth()<<std::endl;
+						}	
+						if(player.getHealth()<=0)
+						{
+							state=STATE::GAME_OVER;
+						}
+					}
+
+				}
+			}
+			
+			if(ammoPickup.isSpawned())
+			{
+				int amo_Pkp_posX = ammoPickup.getPos().x;
+				int amo_Pkp_posY = ammoPickup.getPos().y;
 				int Plr_posX = player.getPos().x;
 				int Plr_posY = player.getPos().y;
-				if(pow(pow(Zom_posY - Plr_posY,2)+pow(Zom_posX - Plr_posX,2),0.5) <= 60)
+				if(pow(pow(amo_Pkp_posY- Plr_posY,2)+pow(amo_Pkp_posX - Plr_posX,2),0.5) <= 50)
 				{
-					if(player.hit(dtasSeconds*1000.0f))
-					{
-
-					}
-					if(player.getHealth()<=0)
-					{
-						state=STATE::GAME_OVER;
-					}
+					ammoPickup.gotIt();
 				}
-
-				
 			}
-
-
-
+			if(healthPickup.isSpawned())
+			{
+				int hlt_Pkp_posX = healthPickup.getPos().x;
+				int hlt_Pkp_posY = healthPickup.getPos().y;
+				int Plr_posX = player.getPos().x;
+				int Plr_posY = player.getPos().y;
+				if(pow(pow(hlt_Pkp_posY- Plr_posY,2)+pow(hlt_Pkp_posX - Plr_posX,3),0.5) <= 50)
+				{
+					healthPickup.gotIt();
+				}
+					
+			}
+			
 		}//End of isPlaying enum
 
 	

@@ -1,5 +1,6 @@
 #include "Pickup.h"
 #include "textureHolder.h"
+#include <SFML/System/Vector2.hpp>
 
 Pickup::Pickup(int type)
 {
@@ -45,9 +46,9 @@ void Pickup::spawn()
 	m_Sprite.setPosition(x,y);
 }
 
-sf::FloatRect Pickup::getPosition()
+sf::Vector2f Pickup::getPos()
 {
-	return m_Sprite.getGlobalBounds();
+	return m_Sprite.getPosition();
 }
 sf::Sprite Pickup::getSprite()
 {
