@@ -49,7 +49,7 @@ int main()
 	zombie* zombies = nullptr;
 
 	bullet bullets[100];
-	int bulletSpare = 10000;
+	int bulletSpare = 30;
 	int bulletsinClip = 30;
 	int clipSize = 30;
 	int currentBullet = 0;
@@ -153,6 +153,9 @@ int main()
 	sf::RectangleShape healthBar;
 	healthBar.setFillColor(sf::Color::Red);
 	healthBar.setPosition(450, 980);
+
+	int FramesSinceLastUpdate = 0;
+	int UpdateInterval = 1000;
 
 	while(window.isOpen())
 	{
@@ -408,6 +411,7 @@ int main()
 				if(pow(pow(amo_Pkp_posY- Plr_posY,2)+pow(amo_Pkp_posX - Plr_posX,2),0.5) <= 50)
 				{
 					ammoPickup.gotIt();
+					bulletSpare += 30;
 				}
 			}
 			if(healthPickup.isSpawned())
@@ -416,14 +420,44 @@ int main()
 				int hlt_Pkp_posY = healthPickup.getPos().y;
 				int Plr_posX = player.getPos().x;
 				int Plr_posY = player.getPos().y;
-				if(pow(pow(hlt_Pkp_posY- Plr_posY,2)+pow(hlt_Pkp_posX - Plr_posX,3),0.5) <= 50)
+				if(pow(pow(hlt_Pkp_posY- Plr_posY,2)+pow(hlt_Pkp_posX - Plr_posX,2),0.5) <= 50)
 				{
 					healthPickup.gotIt();
+					player.recoverHealth();
 				}
 					
 			}
 			
-		}//End of isPlaying enum
+			healthBar.setSize( sf::Vector2f( player.getHealth() * 3 , 50 ) );
+			++FramesSinceLastUpdate;
+
+			std::stringstream ss_Ammo;
+			std::stringstream ss_Score;
+			std::stringstream ss_Wave;
+			std::stringstream ss_aliveZombies;
+			std::stringstream ss_hiScore;
+
+			if(FramesSinceLastUpdate > UpdateInterval)
+			{
+				ss_Ammo<<bulletsinClip<<"/"<<bulletSpare;
+				ammoText.setString(ss_Ammo.str());
+
+				ss_Score<<score;
+				scoreText.setString(ss_Score.str());
+
+				ss_Wave<<wave;
+				waveNumberText.setString(ss_Wave.str());
+
+				ss_aliveZombies<<numZombiesAlive;
+				zombiesRemainingText.setString(ss_aliveZombies.str());
+
+				ss_hiScore<<highScore;
+				hiScoreText.setString(ss_hiScore.str());
+
+				FramesSinceLastUpdate = 0;
+			}
+		
+		}//End of isPlaying enum Part Update
 
 	
 		if(state == STATE::PLAYING)
@@ -454,8 +488,38 @@ int main()
 			}
 
 			window.draw(playerCrosshair);
-		window.display();
+
+			window.setView(hudView);
+			window.draw(spriteAmmoIcon);
+			window.draw(ammoText);
+			window.draw(scoreText);
+			window.draw(hiScoreText);
+			window.draw(zombiesRemainingText);
+			window.draw(waveNumberText);
+			window.draw(healthBar);
+
 		}
+
+		if(state == STATE::LEVELLING_UP)
+		{
+			window.draw(spriteGameOver);
+			window.draw(LeveLLingUpText);
+		}
+		
+		if(state == STATE::PAUSED)
+		{
+			window.draw(pausedText);
+		}
+
+		if(state == STATE::GAME_OVER)
+		{
+			window.draw(spriteGameOver);
+			window.draw(gameOverText);
+			window.draw(scoreText);
+			window.draw(hiScoreText);
+		}
+
+			window.display();
 
 	}//End of Game loop
 	 
