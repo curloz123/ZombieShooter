@@ -40,19 +40,16 @@ void Player::ResetPlayerStats()
 	m_maxHealth = startHealth;
 }
 
-bool Player::hit(float timeHit )
+bool Player::hit(sf::Time timeHit )
 {
-	m_lastHit += timeHit;
-	if(m_lastHit > 200)
+	m_lastHit += timeHit.asSeconds() * 1000.0f;
+	if(m_lastHit > 500)
 	{
 		m_lastHit = 0;
 		m_Health -= 10;
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
  
 // sf::Time Player::getLasthittime()

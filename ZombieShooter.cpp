@@ -368,19 +368,28 @@ int main()
 			{
 				//Preparing the level
 				++wave;
-				arena.width = 500 * wave;
-				arena.height = 500 * wave;
+				arena.width = 250 * (wave+1);
+				arena.height = 250 * (wave+1);
 				arena.left = 0;
 				arena.top = 0;
 
+				
 				int tileSize = createBackground(backGround , arena );
 				player.spawn(arena , resolution , tileSize);
 				score = 0;
 
-				numZombies = 15 * wave;
+				numZombies = 20 * wave;
+				// numZombies = 3;
 				numZombiesAlive = numZombies;
 				delete[] zombies;
 				zombies = createHorde(numZombies , arena);
+				if(wave!=1)
+				{
+					for(int i=0;i<numZombies;++i)
+					{
+						zombies[i].upgrade();
+					}
+				}
 				
 				healthPickup.setArena(arena);
 				ammoPickup.setArena(arena);
@@ -457,7 +466,7 @@ int main()
 				}//
 				
 			}//
-
+			bool registerHit = true;
 			for(int i=0;i<numZombies;++i)
 			{
 				if(zombies[i].Alive())
@@ -467,9 +476,10 @@ int main()
 					int Plr_posX = player.getPos().x;
 					int Plr_posY = player.getPos().y;
 
-					if(pow(pow(Zom_posY - Plr_posY,2)+pow(Zom_posX - Plr_posX,2),0.5) <= 60)
+					if(pow(pow(Zom_posY - Plr_posY,2)+pow(Zom_posX - Plr_posX,2),0.5) <= 60 && registerHit)
 					{
-						if(player.hit(dtasSeconds*1000.0f))
+						registerHit = false;
+						if(player.hit(dt))
 						{
 							Hit.play();
 							std::cout<<player.getHealth()<<std::endl;

@@ -102,3 +102,9 @@ void zombie::update(float deltaTime , sf::Vector2f playerPosition)
 	m_Sprite.setPosition(m_Position);
 	m_Sprite.setRotation(angle);
 }
+
+void zombie::upgrade()
+{
+	m_Speed += 5;
+	m_Health += 5;
+}

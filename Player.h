@@ -29,7 +29,7 @@ public:
 	Player();
 	void spawn(sf::IntRect arena , sf::Vector2f resolution , int tileSize);
 	void ResetPlayerStats();
-	bool hit(float timeHit);
+	bool hit(sf::Time timeHit);
 	// sf::Time getLasthittime();
 	sf::Vector2f getPos();
 	sf::Vector2f getCenter();
