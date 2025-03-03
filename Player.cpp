@@ -180,4 +180,7 @@ void Player::increaseMaxHealth()
 	m_maxHealth += startHealth * 0.2f;
 }
 
-
+void Player::setHealth(int health)
+{
+	m_Health = health;
+}

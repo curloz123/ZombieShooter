@@ -35,6 +35,7 @@ public:
 	sf::Vector2f getCenter();
 	float getRotation();
 	sf::Sprite getSprite();
+	void setHealth(int health);
 
 	void moveLeft();
 	void moveRight();

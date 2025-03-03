@@ -1,4 +1,6 @@
 #include "Player.h"
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Err.hpp>
 #include<cmath>
@@ -10,11 +12,14 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include<SFML/Audio.hpp>
 #include "textureHolder.h"
 #include "Bullet.h"
 #include "Pickup.h"
 #include<iostream>
 #include<sstream>
+#include<fstream>
+
 int main()
 {
 	textureHolder texture;
@@ -49,11 +54,11 @@ int main()
 	zombie* zombies = nullptr;
 
 	bullet bullets[100];
-	int bulletSpare = 30;
+	int bulletSpare = 150;
 	int bulletsinClip = 30;
 	int clipSize = 30;
 	int currentBullet = 0;
-	float rateofFire = 2;
+	float rateofFire = 1;
 	sf::Time lastPressed;
 
 	window.setMouseCursorVisible(false);
@@ -66,6 +71,13 @@ int main()
 
 	int score = 0;
 	int highScore = 0;
+
+	std::ifstream inputFile("gamedata/score.txt");
+	if(inputFile.is_open())
+	{
+		inputFile >> highScore;
+		inputFile.close();
+	}
 
 	sf::Sprite spriteGameOver;
 	sf::Texture gameOverTexture = textureHolder::getTexture("graphics/background.png"); 
@@ -131,7 +143,7 @@ int main()
 	hiScoreText.setFillColor(sf::Color::White);
 	hiScoreText.setPosition(1400, 0);
 	std::stringstream s;
-	s << "Hi Score:" << highScore;
+	s << "Highest Score:" << highScore;
 	hiScoreText.setString(s.str());
 
 // Zombies remaining
@@ -157,6 +169,43 @@ int main()
 	int FramesSinceLastUpdate = 0;
 	int UpdateInterval = 1000;
 
+	//Preparing Sounds
+	
+	sf::SoundBuffer hitBuffer;
+	hitBuffer.loadFromFile("sound/hit.wav");
+	sf::Sound Hit;
+	Hit.setBuffer(hitBuffer);
+
+	sf::SoundBuffer splatBuffer;
+	splatBuffer.loadFromFile("sound/splat.wav");
+	sf::Sound Splat;
+	Splat.setBuffer(splatBuffer);
+
+	sf::SoundBuffer shootBuffer;
+	shootBuffer.loadFromFile("sound/shoot.wav");
+	sf::Sound Shoot;
+	Shoot.setBuffer(shootBuffer);
+
+	sf::SoundBuffer reloadBuffer;
+	reloadBuffer.loadFromFile("sound/reload.wav");
+	sf::Sound Reload;
+	Reload.setBuffer(reloadBuffer);
+
+	sf::SoundBuffer reloadfailedBuffer;
+	reloadfailedBuffer.loadFromFile("sound/reload_failed.wav");
+	sf::Sound reloadFailed;
+	reloadFailed.setBuffer(reloadfailedBuffer);
+
+	sf::SoundBuffer powerupBuffer;
+	powerupBuffer.loadFromFile("sound/powerup.wav");
+	sf::Sound powerup;
+	powerup.setBuffer(powerupBuffer);
+
+	sf::SoundBuffer pickupBuffer;
+	pickupBuffer.loadFromFile("sound/pickup.wav");
+	sf::Sound pickup;
+	pickup.setBuffer(pickupBuffer);
+
 	while(window.isOpen())
 	{
 		sf::Event event;
@@ -176,7 +225,17 @@ int main()
 				else if(event.key.code == sf::Keyboard::Return && state == STATE::GAME_OVER)
 				{
 					state = STATE::LEVELLING_UP;
+					wave = 0;
+					score = 0;
+					currentBullet = 0;
+					bulletSpare = 150;
+					bulletsinClip = 30;
+					clipSize = 30;
+					rateofFire = 1;
+
+					player.ResetPlayerStats();
 				}
+
 				if(state == STATE::PLAYING)
 				{
 					if(event.key.code == sf::Keyboard::R)
@@ -186,15 +245,17 @@ int main()
 						{ 
 							bulletsinClip = clipSize;	
 							bulletSpare -= clipSize;
+							Reload.play();
 						}
 						else if(bulletSpare > 0 )
 						{
 							bulletsinClip = bulletSpare;
 							bulletSpare = 0;
+							Reload.play();
 						}
 						else
 						{
-
+							reloadFailed.play();
 						}
 					}//end of Reloading if
 				}//end of state = playing
@@ -245,8 +306,9 @@ int main()
 
 			if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				if(gameTime.asMilliseconds() - lastPressed.asMilliseconds() > 100*rateofFire && bulletsinClip>0)
+				if(gameTime.asMilliseconds() - lastPressed.asMilliseconds() > 400/rateofFire && bulletsinClip>0)
 				{
+					Shoot.play();
 					bullets[currentBullet].shoot(player.getCenter().x , player.getCenter().y ,
 							MOUSE_worldPosition.x , MOUSE_worldPosition.y);
 					++currentBullet;
@@ -264,49 +326,66 @@ int main()
 		{
 			if (event.key.code == sf::Keyboard::Num1)
 			{
+				++rateofFire;
+				if(rateofFire > 4)
+				{
+					rateofFire = 4;
+				}
 				state = STATE::PLAYING;
+				
 			}
 			if (event.key.code == sf::Keyboard::Num2)
 			{
+				clipSize += 5;
+				if(clipSize >= 50)
+				{
+					clipSize = 50;
+				}
 				state = STATE::PLAYING;
 			}
 			if (event.key.code == sf::Keyboard::Num3)
 			{	
+				player.increaseMaxHealth();
 				state = STATE::PLAYING;
 			}
 			if (event.key.code == sf::Keyboard::Num4)
 			{
+				player.upgradeSpeed();
 				state = STATE::PLAYING;
 			}
 			if (event.key.code == sf::Keyboard::Num5)
 			{
+				healthPickup.upgrade();
 				state = STATE::PLAYING;
 			}
 			if (event.key.code == sf::Keyboard::Num6)
 			{
+				ammoPickup.upgrade();
 				state = STATE::PLAYING;
 			}
 			
 			if(state == STATE::PLAYING)
 			{
 				//Preparing the level
-				arena.width = 500;
-				arena.height = 500;
+				++wave;
+				arena.width = 500 * wave;
+				arena.height = 500 * wave;
 				arena.left = 0;
 				arena.top = 0;
 
 				int tileSize = createBackground(backGround , arena );
 				player.spawn(arena , resolution , tileSize);
+				score = 0;
 
-				numZombies = 10;
-				numZombiesAlive = 10;
+				numZombies = 15 * wave;
+				numZombiesAlive = numZombies;
 				delete[] zombies;
 				zombies = createHorde(numZombies , arena);
 				
 				healthPickup.setArena(arena);
 				ammoPickup.setArena(arena);
 
-				
+				powerup.play();	
 				clock.restart();
 				//ts << clock timings ko dekhna zara
 
@@ -358,12 +437,13 @@ int main()
 						int Bul_posY = bullets[i].getPos().y;
 						if(pow(pow(Zom_posY-Bul_posY,2)+pow(Zom_posX-Bul_posX,2),0.5)<=40)
 						{
+							Splat.play();
 							bullets[i].stop();
 							if(zombies[j].Hit())
 							{
 								score += 10;
 								--numZombiesAlive;
-								if(highScore<score)
+								if(highScore < score)
 								{
 									highScore = score;
 								}
@@ -391,11 +471,15 @@ int main()
 					{
 						if(player.hit(dtasSeconds*1000.0f))
 						{
+							Hit.play();
 							std::cout<<player.getHealth()<<std::endl;
 						}	
 						if(player.getHealth()<=0)
 						{
 							state=STATE::GAME_OVER;
+							std::ofstream outputFile("gamedata/score.txt");
+							outputFile << highScore;
+							outputFile.close();
 						}
 					}
 
@@ -411,6 +495,7 @@ int main()
 				if(pow(pow(amo_Pkp_posY- Plr_posY,2)+pow(amo_Pkp_posX - Plr_posX,2),0.5) <= 50)
 				{
 					ammoPickup.gotIt();
+					pickup.play();
 					bulletSpare += 30;
 				}
 			}
@@ -423,6 +508,7 @@ int main()
 				if(pow(pow(hlt_Pkp_posY- Plr_posY,2)+pow(hlt_Pkp_posX - Plr_posX,2),0.5) <= 50)
 				{
 					healthPickup.gotIt();
+					pickup.play();
 					player.recoverHealth();
 				}
 					
