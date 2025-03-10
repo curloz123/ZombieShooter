@@ -25,17 +25,20 @@ private:
 	float m_Speed;
 	float m_lastHit;
 
+
 public:
 	Player();
 	void spawn(sf::IntRect arena , sf::Vector2f resolution , int tileSize);
 	void ResetPlayerStats();
-	bool hit(sf::Time timeHit);
+	bool hit();
 	// sf::Time getLasthittime();
 	sf::Vector2f getPos();
 	sf::Vector2f getCenter();
 	float getRotation();
 	sf::Sprite getSprite();
 	void setHealth(int health);
+
+	sf::Clock clock;
 
 	void moveLeft();
 	void moveRight();

@@ -14,6 +14,7 @@ Player::Player()
 	m_Texture.loadFromFile("graphics/player.png");
 	m_Sprite.setTexture(m_Texture);
 	m_Sprite.setOrigin(25,25);
+	
 }
 
 void Player::spawn(sf::IntRect arena , sf::Vector2f resolution , int tileSize)
@@ -40,9 +41,11 @@ void Player::ResetPlayerStats()
 	m_maxHealth = startHealth;
 }
 
-bool Player::hit(sf::Time timeHit )
+bool Player::hit()
 {
-	m_lastHit += timeHit.asSeconds() * 1000.0f;
+	sf::Time deltaTime = clock.restart();
+	m_lastHit += deltaTime.asSeconds()*1000;
+	std::cout<<m_lastHit<<std::endl;
 	if(m_lastHit > 500)
 	{
 		m_lastHit = 0;

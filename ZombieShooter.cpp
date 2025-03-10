@@ -166,8 +166,8 @@ int main()
 	healthBar.setFillColor(sf::Color::Red);
 	healthBar.setPosition(450, 980);
 
-	int FramesSinceLastUpdate = 0;
-	int UpdateInterval = 1000;
+	float timeSinceLastUpdate = 0;
+	int UpdateInterval = 100;
 
 	//Preparing Sounds
 	
@@ -479,10 +479,10 @@ int main()
 					if(pow(pow(Zom_posY - Plr_posY,2)+pow(Zom_posX - Plr_posX,2),0.5) <= 60 && registerHit)
 					{
 						registerHit = false;
-						if(player.hit(dt))
+						if(player.hit())
 						{
 							Hit.play();
-							std::cout<<player.getHealth()<<std::endl;
+							// std::cout<<player.getHealth()<<std::endl;
 						}	
 						if(player.getHealth()<=0)
 						{
@@ -525,7 +525,7 @@ int main()
 			}
 			
 			healthBar.setSize( sf::Vector2f( player.getHealth() * 3 , 50 ) );
-			++FramesSinceLastUpdate;
+			timeSinceLastUpdate += dtasSeconds*1000.0f;
 
 			std::stringstream ss_Ammo;
 			std::stringstream ss_Score;
@@ -533,24 +533,24 @@ int main()
 			std::stringstream ss_aliveZombies;
 			std::stringstream ss_hiScore;
 
-			if(FramesSinceLastUpdate > UpdateInterval)
+			if(timeSinceLastUpdate > UpdateInterval)
 			{
 				ss_Ammo<<bulletsinClip<<"/"<<bulletSpare;
 				ammoText.setString(ss_Ammo.str());
 
-				ss_Score<<score;
+				ss_Score<<"Score: "<<score;
 				scoreText.setString(ss_Score.str());
 
-				ss_Wave<<wave;
+				ss_Wave<<"Wave: "<<wave;
 				waveNumberText.setString(ss_Wave.str());
 
-				ss_aliveZombies<<numZombiesAlive;
+				ss_aliveZombies<<"Zombies Alive: "<<numZombiesAlive;
 				zombiesRemainingText.setString(ss_aliveZombies.str());
 
-				ss_hiScore<<highScore;
+				ss_hiScore<<"High Score: "<<highScore;
 				hiScoreText.setString(ss_hiScore.str());
 
-				FramesSinceLastUpdate = 0;
+				timeSinceLastUpdate = 0;
 			}
 		
 		}//End of isPlaying enum Part Update
